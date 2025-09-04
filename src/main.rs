@@ -1,8 +1,8 @@
 use axum::{
-    routing::{get, post},
-    Router,
+    debug_handler, routing::{get, post}, Json, Router
 };
 
+use serde;
 
 
 #[tokio::main]
@@ -21,9 +21,22 @@ async fn main() {
     axum::serve(listener, router01).await.unwrap();
 }
 
+#[derive(Debug, serde::Serialize)]
+struct Vehicle {
+    manufacturer: String,
+    model: String,
+    year: u32,
+    id: String
+}
 
-async fn vehicle_get() {
-
+#[debug_handler]
+async fn vehicle_get() -> Json<Vehicle> {
+    Json::from(Vehicle {
+        manufacturer: "Dodge".to_string(),
+        model: "RRA 12".to_string(),
+        year: 1995,
+        id: uuid::Uuid::new_v4().to_string()
+    })
 }
 
 async fn vehicle_post() {
